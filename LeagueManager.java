@@ -38,28 +38,32 @@ public class LeagueManager {
     }
 
 
-
-
-
-
     public static void printLeagueBalanceReport(Map<String, Team> teams) {
         System.out.println("League Balance Report: ");
         for (Map.Entry<String, Team> entry : teams.entrySet()) {
             String key = entry.getKey();
             Team team = entry.getValue();
-            System.out.printf("Team %s has %s experienced and %s inexperienced players.%n",
-                    key, team.getExperiencedPlayers(), team.getInexperiencedPlayers());
+            int numberOfExperiencedPlayers = team.getExperiencedPlayers();
+            int numberOfInexperiencedPlayers = team.getInexperiencedPlayers();
+            System.out.printf("Team %s has %s experienced and %s inexperienced players. So the average experience" +
+                            "is %s.%n",
+                    key, numberOfExperiencedPlayers, numberOfInexperiencedPlayers,
+                    numberOfExperiencedPlayers + numberOfInexperiencedPlayers);
         }
         System.out.println();
     }
 
     public static void listTeamMembersByHeight(Map<String, Team> teams, Prompter prompter) {
         String teamName = prompter.getTeamName(teams);
-        Team team = teams.get(teamName);
-        List<Player> playersByHeight = team.getPlayersByHeight();
-        System.out.println("Players by height: ");
-        for (Player player : playersByHeight) {
-            System.out.println(player);
+        try {
+            Team team = teams.get(teamName);
+            List<Player> playersByHeight = team.getPlayersByHeight();
+            System.out.println("Players by height: ");
+            for (Player player : playersByHeight) {
+                System.out.println(player);
+            }
+        } catch (NullPointerException npe) {
+            System.out.println(npe.getMessage());
         }
     }
 

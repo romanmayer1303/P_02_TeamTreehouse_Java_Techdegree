@@ -9,14 +9,23 @@ public class Player implements Comparable<Player>, Serializable {
   private String lastName;
   private int heightInInches;
   private boolean previousExperience;
+  private boolean taken;
 
   public Player(String firstName, String lastName, int heightInInches, boolean previousExperience) {
     this.firstName = firstName;
     this.lastName = lastName;
     this.heightInInches = heightInInches;
     this.previousExperience = previousExperience;
+    this.taken = false;
   }
 
+  public boolean isTaken() {
+    return taken;
+  }
+
+  public void setTaken(boolean taken) {
+    this.taken = taken;
+  }
 
   public int getHeightInInches() {
     return heightInInches;

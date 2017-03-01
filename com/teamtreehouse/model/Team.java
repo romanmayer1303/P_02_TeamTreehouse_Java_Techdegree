@@ -2,9 +2,6 @@ package com.teamtreehouse.model;
 
 import java.util.*;
 
-/**
- * Created by romanmayer on 28/02/2017.
- */
 public class Team {
 
     private String name;
@@ -27,16 +24,22 @@ public class Team {
     }
 
     public boolean addPlayer(Player player) {
-        boolean added = this.players.add(player);
-        if (added) {
-            adjustBalanceAdded(player);
+        boolean added = false;
+        if (!player.isTaken()) {
+            added = this.players.add(player);
+            if (added) {
+                adjustExperienceWhenPlayerIsAddedToTeam(player);
+                player.setTaken(true);
+            }
+        } else {
+            System.out.print("This player is already taken by a team. "); //TODO:rm should be in prompter
         }
         return added;
     }
 
     // balance increases by 1 when an experienced player joins the team and decreases by 1 when
     // an inexperienced player joins the team
-    public void adjustBalanceAdded(Player player) {
+    public void adjustExperienceWhenPlayerIsAddedToTeam(Player player) {
         if (player.isPreviousExperience()) {
             experiencedPlayers++;
         } else {
@@ -44,7 +47,7 @@ public class Team {
         }
     }
 
-    public void adjustBalanceRemoved(Player player) {
+    public void adjustExperienceWhenPlayerIsRemovedFromTeam(Player player) {
         if (player.isPreviousExperience()) {
             experiencedPlayers--;
         } else {
@@ -55,23 +58,11 @@ public class Team {
     public boolean removePlayer(Player player) {
         boolean removed = this.players.remove(player);
         if (removed) {
-            adjustBalanceRemoved(player);
+            adjustExperienceWhenPlayerIsRemovedFromTeam(player);
+            player.setTaken(false);
         }
         return removed;
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getCoach() {
-        return coach;
-    }
-
 
     public int getExperiencedPlayers() {
         return experiencedPlayers;
@@ -81,16 +72,8 @@ public class Team {
         return inexperiencedPlayers;
     }
 
-    public void setCoach(String coach) {
-        this.coach = coach;
-    }
-
     public Set<Player> getPlayers() {
         return players;
-    }
-
-    public void setPlayers(Set<Player> players) {
-        this.players = players;
     }
 
     public List<Player> getPlayersByHeight() {
