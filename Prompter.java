@@ -12,10 +12,15 @@ public class Prompter {
     private BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
 
-    public int askForPlayerNumber() {
+    public int askForPlayerNumber(int numberOfPlayers) {
         try {
             System.out.printf("Select which player you want.%n");
-            return Integer.parseInt(br.readLine().replaceAll("\\s", ""));
+            int input = Integer.parseInt(br.readLine().replaceAll("\\s", ""));
+            if (input > 0 && input <= numberOfPlayers) {
+                return input;
+            } else {
+                notValidInput(Integer.toString(input));
+            }
         } catch (IOException ioe) {
             System.out.println(ioe.getMessage());
         }
@@ -33,6 +38,8 @@ public class Prompter {
             return teamName;
         } catch (IOException ioe) {
             System.out.println(ioe.getMessage());
+        } catch (NullPointerException npe) {
+            System.out.println("Not on the list.");
         }
         return null;
     }
@@ -98,5 +105,9 @@ public class Prompter {
 
     public void notEnoughPlayers() {
         System.out.println("There are already as many teams as there are players. Can't create more teams.");
+    }
+
+    public void notValidInput(String item) {
+        System.out.printf("'%s' is not a valid input.%n%n", item);
     }
 }

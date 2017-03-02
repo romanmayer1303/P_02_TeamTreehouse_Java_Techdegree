@@ -33,6 +33,8 @@ public class LeagueManager {
                 printLeagueBalanceReport(teams);
             } else if (item == 6) {
                 printRoster(teams, prompter);
+            } else {
+                prompter.notValidInput(Integer.toString(item));
             }
         }
     }
@@ -45,10 +47,16 @@ public class LeagueManager {
             Team team = entry.getValue();
             int numberOfExperiencedPlayers = team.getExperiencedPlayers();
             int numberOfInexperiencedPlayers = team.getInexperiencedPlayers();
-            System.out.printf("Team %s has %s experienced and %s inexperienced players. So the average experience" +
-                            "is %s.%n",
+            System.out.printf("Team %s has %s experienced and %s inexperienced players. So the average experience " +
+                            "is %s. ",
                     key, numberOfExperiencedPlayers, numberOfInexperiencedPlayers,
                     numberOfExperiencedPlayers + numberOfInexperiencedPlayers);
+
+            team.getHeights().forEach(
+                    (height, count)
+                            -> System.out.printf("There are %s players of height %s on this team. ", count, height)
+            );
+            System.out.println();
         }
         System.out.println();
     }
@@ -71,30 +79,36 @@ public class LeagueManager {
         // which team?
         String teamName = prompter.getTeamName(teams);
 
-        // list players that are already on the team
-        prompter.listTeamMembers(teams, teamName);
+        if (teams.containsKey(teamName)) {
+            // list players that are already on the team
+            prompter.listTeamMembers(teams, teamName);
 
-        // which player?
-        prompter.listAllPlayers(players);
-        int playerNumber = prompter.askForPlayerNumber();
-        Player player = players[playerNumber - 1];
-        Team team = teams.get(teamName);
+            // which player?
+            prompter.listAllPlayers(players);
+            int playerNumber = prompter.askForPlayerNumber(players.length);
+            if (playerNumber != -1) {
+                Player player = players[playerNumber - 1];
+                Team team = teams.get(teamName);
 
 
-        if (item == 2) {
-            // add
-            if (team.addPlayer(player)) {
-                System.out.println("Player added successfully.");
-            } else {
-                System.out.println("Player NOT added.");
+                if (item == 2) {
+                    // add
+                    if (team.addPlayer(player)) {
+                        System.out.println("Player added successfully.");
+                    } else {
+                        System.out.println("Player NOT added.");
+                    }
+                } else if (item == 3) {
+                    // remove
+                    if (team.removePlayer(player)) {
+                        System.out.println("Player removed successfully.");
+                    } else {
+                        System.out.println("Player NOT removed.");
+                    }
+                }
             }
-        } else if (item == 3) {
-            // remove
-            if (team.removePlayer(player)) {
-                System.out.println("Player removed successfully.");
-            } else {
-                System.out.println("Player NOT removed.");
-            }
+        } else {
+            prompter.notValidInput(teamName);
         }
     }
 

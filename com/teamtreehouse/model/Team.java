@@ -12,7 +12,9 @@ public class Team {
 
     private Set<Player> players;
     // if Player implements Comparable
-    // implement as TreeSet, because (i) sets have unique elements (ii) TREEset is ordered by the compareTo function,
+    // implement as TreeSet, because (i) sets have unique elements (ii) TREEset is ordered by the compareTo function
+
+    private Map<Integer, Integer> heights; // key: inches, value: number of players of that height
 
     public Team(String name, String coach) {
         this.name = name;
@@ -21,6 +23,7 @@ public class Team {
         this.inexperiencedPlayers = 0;
 
         this.players = new TreeSet<>();
+        this.heights = new HashMap<>();
     }
 
     public boolean addPlayer(Player player) {
@@ -30,11 +33,25 @@ public class Team {
             if (added) {
                 adjustExperienceWhenPlayerIsAddedToTeam(player);
                 player.setTaken(true);
+
+                if (heights.containsKey(player.getHeightInInches())) {
+                    // team already has a player of this height
+                    int key = player.getHeightInInches();
+                    heights.put(key, heights.get(key) + 1);
+                } else {
+                    // current player first player of this height
+                    heights.put(player.getHeightInInches(), 1);
+                }
+
             }
         } else {
             System.out.print("This player is already taken by a team. "); //TODO:rm should be in prompter
         }
         return added;
+    }
+
+    public Map<Integer, Integer> getHeights() {
+        return heights;
     }
 
     // balance increases by 1 when an experienced player joins the team and decreases by 1 when
